@@ -5,7 +5,8 @@
 单个项目
 */
 
-import createUUID from '@/utils/index.js'
+import { createUUID } from '@/utils/index.js'
+import { cloneDeep } from 'lodash'
 
 const elementConfig = {
   elName: '',
@@ -99,9 +100,28 @@ const getElementConfig = function(element, extendStyle = {}) {
   return config
 }
 
+// 项目数据
+const getProjectConfig = () => {
+  const project = cloneDeep(projectConfig) || {}
+  const singlePageData = getPageConfig()
+  project.pages.push({
+    ...singlePageData
+  })
+  return { ...project }
+}
+
+const getPageConfig = () => {
+  return {
+    uuid: createUUID(),
+    ...cloneDeep(pageConfig)
+  }
+}
+
 export default {
   elementConfig,
   pageConfig,
   projectConfig,
-  getElementConfig
+  getElementConfig,
+  getProjectConfig,
+  getPageConfig
 }

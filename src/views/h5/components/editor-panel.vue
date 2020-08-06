@@ -20,8 +20,14 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
+import editShape from './edit-shape'
+import { rigester_component } from '@/plugin/index'
 
 export default {
+  components: {
+    editShape,
+    ...rigester_component
+  },
   data() {
     return {
       scale: 1
@@ -39,3 +45,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+  .page-preview-wrapper {
+    position: relative;
+    height: 100%;
+  }
+</style>

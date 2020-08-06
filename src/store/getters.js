@@ -11,6 +11,16 @@ const getters = {
   introduction: state => state.user.introduction,
   roles: state => state.user.roles,
   permission_routes: state => state.permission.routes,
-  errorLogs: state => state.errorLog.logs
+  errorLogs: state => state.errorLog.logs,
+  activePage: state => {
+    if (!(state.editor.projectData && state.editor.projectData.pages) || !state.editor.activePageUUID) {
+      return {
+        commonStyle: {},
+        config: {}
+      }
+    }
+    return state.editor.projectData.pages.find(item => { item.uuid === state.editor.activePageUUID })
+  },
+  pageMode: state => state.editor.projectData.pageMode
 }
 export default getters

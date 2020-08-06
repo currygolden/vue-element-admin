@@ -1,11 +1,14 @@
-import editorProjectConfig from '@/views/h5/ele-config'
+import editorProjectConfig from '@/views/h5/DataModel'
+import realGetters from '../getters'
+console.log('gget:', realGetters)
 /*
 新建/编辑页面数据
 
 */
 const state = {
   projectData: {
-    pageMode: ''
+    pageMode: '',
+    pages: []
   },
   activePageUUID: '', // 正在编辑页面的uuid
   activeElementUUID: '' // 选中元素的uuid
@@ -28,7 +31,9 @@ const actions = {
     添加组件元素
   */
   addElement({ commit }, elData) {
-    const activePage = getters.activePage(state)
+    console.log(111)
+    const activePage = realGetters.activePage(state)
+    console.log('activePage:', activePage)
     // 每添加一个元素，获取其数据模型并修改层叠属性
     // 数据模型 是基于基础模版和元素具体类型
     const data = editorProjectConfig.getElementConfig(elData, { zIndex: activePage.elements.length + 1 })
@@ -38,25 +43,24 @@ const actions = {
   }
 }
 
-const getters = {
-  // 当前选中的页面
-  activePage: state => {
-    if (!state.projectData.pages || !state.activePageUUID) {
-      return {
-        commonStyle: {},
-        config: {}
-      }
-    }
-    return state.projectData.pages.find(item => { item.uuid === state.activePageUUID })
-  },
-  // 当前页面模式
-  pageMode: state => state.projectData.pageMode
-}
+// const realGetters = {
+//   // 当前选中的页面
+//   activePage: state => {
+//     if (!state.projectData.pages || !state.activePageUUID) {
+//       return {
+//         commonStyle: {},
+//         config: {}
+//       }
+//     }
+//     return state.projectData.pages.find(item => { item.uuid === state.activePageUUID })
+//   },
+//   // 当前页面模式
+//   pageMode: state => state.projectData.pageMode
+// }
 
 export default {
   namespaced: true,
   state,
-  getters,
   actions,
   mutations
 }

@@ -1,4 +1,5 @@
 <template>
+  <!-- 展示可选组件区域 -->
   <div class="component-libs-wrapper">
     <p class="page-title">组件库</p>
     <el-scrollbar>
@@ -45,7 +46,7 @@ export default {
       // 获取组件属性
       const props = this.getComponentProps(obj.elName)
       // 触发数据更新
-      this.$store.dispatch('addElement', { ...obj, needProps: props })
+      this.$store.dispatch('editor/addElement', { ...obj, needProps: props })
     },
     /*
       根据组件名判断需要添加的属性props，这个在自定义组件中已经定义了，目前取出即可
@@ -54,6 +55,12 @@ export default {
     getComponentProps(elName) {
       const elComponentData = rigester_component[elName] || ''
       if (!elComponentData) return
+      // 获取组件的props类型
+      const props = {}
+      for (const key in elComponentData.props) {
+        props[key] = [Object, Array].includes(elComponentData.props[key].type) ? elComponentData.props[key].default() : elComponentData.props[key].default
+      }
+      return props
     }
   }
 }
@@ -69,7 +76,7 @@ export default {
       height: 700px;
       .item-wrapper {
         display: flex;
-        justify-content: start;
+        justify-content: flex-start;
         flex-flow: wrap;
         .component-item {
           background-color: gray;

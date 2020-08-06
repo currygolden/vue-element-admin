@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import editorProjectConfig from '@/views/h5/DataModel'
+
 export default {
   filters: {
     getLabelText(val) {
@@ -91,6 +93,14 @@ export default {
       // 关闭左侧目录
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
       this.$router.push('add')
+
+      /*
+      等node服务准备好再来优化这里,目前先本地保存
+      初始化项目数据，页面数据
+      */
+      const newPageData = editorProjectConfig.getProjectConfig() // 项目数据
+      console.log('dddata:', newPageData)
+      window.localStorage.setItem('pageData', JSON.stringify(newPageData))
     }
   }
 }
