@@ -1,5 +1,7 @@
 /**
- * Created by PanJiaChen on 16/11/18.
+ * 可以是export | export default
+ * 可 exports | module.exports
+ * 但是混用就代表你没明白原理，即使可以用
  */
 
 /**
@@ -34,6 +36,7 @@ export function parseTime(time, cFormat) {
     s: date.getSeconds(),
     a: date.getDay()
   }
+
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
@@ -89,12 +92,15 @@ export function formatTime(time, option) {
 /**
  * @param {string} url
  * @returns {Object}
+ * 获取url的query参数,但是没有区分hash
  */
 export function getQueryObject(url) {
   url = url == null ? window.location.href : url
   const search = url.substring(url.lastIndexOf('?') + 1)
   const obj = {}
+  // 子模式是存在规律的
   const reg = /([^?&=]+)=([^?&=]*)/g
+  // $1, $2 代表匹配到的子模式
   search.replace(reg, (rs, $1, $2) => {
     const name = decodeURIComponent($1)
     let val = decodeURIComponent($2)
@@ -103,6 +109,90 @@ export function getQueryObject(url) {
     return rs
   })
   return obj
+}
+
+/**
+ * 对Date的扩展，将 Date 转化为指定格式的String
+ * 月(M)、日(d)、12小时(h)、24小时(H)、分(m)、秒(s)、周(E)、季度(q) 可以用 1-2 个占位符
+ * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+ * eg:
+ * (new Date()).pattern("yyyy-MM-dd hh:mm:ss.S") ==> 2007-07-02 08:09:04.423
+ * (new Date()).pattern("yyyy-MM-dd E HH:mm:ss") ==> 2007-03-10 二 20:09:04
+ * (new Date()).pattern("yyyy-MM-dd EE hh:mm:ss") ==> 2007-03-10 周二 08:09:04
+ * (new Date()).pattern("yyyy-MM-dd EEE hh:mm:ss") ==> 2007-03-10 星期二 08:09:04
+ * (new Date()).pattern("yyyy-M-d h:m:s.S") ==> 2007-7-2 8:9:4.18
+ */
+export function dateFormat(time, fmt = 'yyyy-MM-dd') {
+  if (!time) {
+    return ''
+  } else if (time.length === 13) {
+    // 时间戳
+    time = +time
+  }
+  const date = new Date(time)
+  const o = {
+    'M+': date.getMonth() + 1,
+    // 月份
+    'd+': date.getDate(),
+    // 日
+    'h+': date.getHours() % 12 === 0 ? 12 : date.getHours() % 12,
+    // 小时
+    'H+': date.getHours(),
+    // 小时
+    'm+': date.getMinutes(),
+    // 分
+    's+': date.getSeconds(),
+    // 秒
+    'q+': Math.floor((date.getMonth() + 3) / 3),
+    // 季度
+    S: date.getMilliseconds() // 毫秒
+  }
+  const week = {
+    0: '\u65e5',
+    1: '\u4e00',
+    2: '\u4e8c',
+    3: '\u4e09',
+    4: '\u56db',
+    5: '\u4e94',
+    6: '\u516d'
+  }
+  if (/(y+)/.test(fmt)) {
+    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+  }
+  if (/(E+)/.test(fmt)) {
+    fmt = fmt.replace(
+      RegExp.$1,
+      (RegExp.$1.length > 1 ? (RegExp.$1.length > 2 ? '\u661f\u671f' : '\u5468') : '') +
+        week[date.getDay() + '']
+    )
+  }
+  for (const k in o) {
+    if (new RegExp('(' + k + ')').test(fmt)) {
+      fmt = fmt.replace(
+        RegExp.$1,
+        RegExp.$1.length === 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length)
+      )
+    }
+  }
+  return fmt
+}
+
+/**
+ *
+ * @param {objcet} obj
+ * @return {string}
+ * 对象转为key=value&的形式
+ */
+export function getObjStr(obj) {
+  if (!obj) return ''
+  let resStr = ''
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      resStr += `${key}=${obj[key]}&`
+    }
+  }
+  resStr = resStr.substring(resStr.length - 2)
+  return resStr
 }
 
 /**
@@ -120,33 +210,26 @@ export function byteLength(str) {
   }
   return s
 }
+/*
+  前端存储的一些场景
 
-/**
- * @param {Array} actual
- * @returns {Array}
- */
-export function cleanArray(actual) {
-  const newArray = []
-  for (let i = 0; i < actual.length; i++) {
-    if (actual[i]) {
-      newArray.push(actual[i])
-    }
+*/
+export function localStorageSet(item, value) {
+  try {
+    window.localStorage.setItem(item, value)
+    return true
+  } catch (e) {
+    return false
   }
-  return newArray
 }
 
-/**
- * @param {Object} json
- * @returns {Array}
- */
-export function param(json) {
-  if (!json) return ''
-  return cleanArray(
-    Object.keys(json).map(key => {
-      if (json[key] === undefined) return ''
-      return encodeURIComponent(key) + '=' + encodeURIComponent(json[key])
-    })
-  ).join('&')
+// localStorage getItem
+export function localStorageGet(name) {
+  try {
+    return window.localStorage.getItem(name)
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 /**
@@ -224,18 +307,6 @@ export function toggleClass(element, className) {
 }
 
 /**
- * @param {string} type
- * @returns {Date}
- */
-export function getTime(type) {
-  if (type === 'start') {
-    return new Date().getTime() - 3600 * 1000 * 24 * 90
-  } else {
-    return new Date(new Date().toDateString())
-  }
-}
-
-/**
  * @param {Function} func
  * @param {number} wait
  * @param {boolean} immediate
@@ -301,6 +372,7 @@ export function deepClone(source) {
 /**
  * @param {Array} arr
  * @returns {Array}
+ * 数组去重
  */
 export function uniqueArr(arr) {
   return Array.from(new Set(arr))

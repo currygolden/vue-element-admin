@@ -124,6 +124,13 @@
           <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
         </el-form-item>
       </el-form>
+      <el-switch v-model="isChoose" />
+      <!-- <el-row class="list" v-show="isChoose">
+        <el-col :span="8" :offset="8">
+          <el-tag v-for="(item, index) in testList" :key="index" @click="hanldeItemClick(item)" closable="">{{ item }}这是测试一段文字</el-tag>
+        </el-col>
+      </el-row> -->
+      <virtual-list :list-data="testList" />
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
           Cancel
@@ -151,6 +158,7 @@ import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import VirtualList from '@/components/VirtualList' // secondary package based on el-pagination
 
 const calendarTypeOptions = [
   { key: 'CN', display_name: 'China' },
@@ -167,7 +175,10 @@ const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
 
 export default {
   name: 'ComplexTable',
-  components: { Pagination },
+  components: {
+    Pagination,
+    VirtualList
+  },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -188,6 +199,8 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
+      isChoose: false,
+      testList: [],
       listQuery: {
         page: 1,
         limit: 20,
@@ -228,6 +241,7 @@ export default {
   },
   created() {
     this.getList()
+    this.getDataList()
   },
   methods: {
     getList() {
@@ -241,6 +255,17 @@ export default {
           this.listLoading = false
         }, 1.5 * 1000)
       })
+    },
+    getDataList() {
+      this.testList = []
+      const num = 10000
+      for (let i = 0; i < num; i++) {
+        this.testList.push(i)
+      }
+      console.log('list:', this.testList)
+    },
+    hanldeItemClick(val) {
+      console.log(val)
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -377,3 +402,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+  .app-container {
+    .list {
+      max-height: 500px;
+      overflow: scroll;
+    }
+  }
+</style>
