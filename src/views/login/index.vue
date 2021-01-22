@@ -158,6 +158,7 @@ export default {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
+              // 这里路由更新的时候生成了用户的路由表
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })

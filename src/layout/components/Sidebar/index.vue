@@ -22,6 +22,7 @@
 import { mapGetters } from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
+// 定义颜色变量可以设计主题
 import variables from '@/styles/variables.scss'
 
 export default {
@@ -31,6 +32,9 @@ export default {
       'permission_routes',
       'sidebar'
     ]),
+    /*
+      使用path 作为 activeMenu
+    */
     activeMenu() {
       const route = this.$route
       const { meta, path } = route
@@ -38,6 +42,7 @@ export default {
       if (meta.activeMenu) {
         return meta.activeMenu
       }
+      console.log('path:', path)
       return path
     },
     showLogo() {

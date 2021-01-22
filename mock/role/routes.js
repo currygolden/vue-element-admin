@@ -319,7 +319,7 @@ const asyncRoutes = [
     redirect: '/example/list',
     name: 'Example',
     meta: {
-      title: 'Example',
+      title: '案例',
       icon: 'example'
     },
     children: [

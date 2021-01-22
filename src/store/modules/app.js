@@ -32,7 +32,9 @@ const mutations = {
     Cookies.set('size', size)
   }
 }
-
+/*
+  这里其实涉及到异步的action如何组织顺序
+*/
 const actions = {
   toggleSideBar({ commit }) {
     commit('TOGGLE_SIDEBAR')

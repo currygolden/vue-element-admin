@@ -33,8 +33,10 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
+      // 接口请求
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
+        // 这一类数据会保存在state和本地缓存库
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         resolve()
@@ -60,7 +62,7 @@ const actions = {
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
-
+        // 同理，这些用户关联数据也保存在state中
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
@@ -116,6 +118,7 @@ const actions = {
     // generate accessible routes map based on roles
     const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
     // dynamically add accessible routes
+    // 这里应该是模拟手动触发路由更新
     router.addRoutes(accessRoutes)
 
     // reset visited views and cached views

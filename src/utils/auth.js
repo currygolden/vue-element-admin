@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie'
-
+// 前端缓存库还是有设计空间
 const TokenKey = 'Admin-Token'
 
 export function getToken() {

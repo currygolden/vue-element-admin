@@ -1,5 +1,6 @@
 <template>
   <div v-if="!item.hidden">
+    <!-- 仅有一个子路径 -->
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
@@ -12,6 +13,7 @@
       <template slot="title">
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
       </template>
+      <!-- 这里是递归组件的例子 -->
       <sidebar-item
         v-for="child in item.children"
         :key="child.path"
@@ -57,12 +59,14 @@ export default {
     return {}
   },
   methods: {
+    // 判断仅有一个子元素，此时没有下拉
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter(item => {
         if (item.hidden) {
           return false
         } else {
           // Temp set(will be used if only has one showing child)
+          // 这里取的会是最后一个
           this.onlyOneChild = item
           return true
         }
@@ -75,6 +79,7 @@ export default {
 
       // Show parent if there are no child router to display
       if (showingChildren.length === 0) {
+        // 默认取父路径
         this.onlyOneChild = { ... parent, path: '', noShowingChildren: true }
         return true
       }
