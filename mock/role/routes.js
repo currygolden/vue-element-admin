@@ -341,6 +341,12 @@ const asyncRoutes = [
         component: 'views/example/list',
         name: 'ArticleList',
         meta: { title: 'Article List', icon: 'list' }
+      },
+      {
+        path: 'form',
+        component: 'views/example/list',
+        name: 'ComplexForm',
+        meta: { title: '深度表单', icon: 'list' }
       }
     ]
   },
@@ -354,6 +360,12 @@ const asyncRoutes = [
         component: 'views/tab/index',
         name: 'Tab',
         meta: { title: 'Tab', icon: 'tab' }
+      },
+      {
+        path: 'create',
+        component: 'views/example/create',
+        name: 'CreateArticle',
+        meta: { title: 'Create Article', icon: 'edit' }
       }
     ]
   },

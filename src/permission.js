@@ -37,6 +37,7 @@ router.beforeEach(async(to, from, next) => {
           const { roles } = await store.dispatch('user/getInfo')
           console.log('role:', roles)
           // generate accessible routes map based on roles
+          // 用户页面权限是根据本身权限和页面跳转实现的
           const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
 
           // dynamically add accessible routes

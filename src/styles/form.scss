@@ -1,0 +1,147 @@
+@import './variables.scss';
+
+// 一些表单和全局样式
+// layout
+.ui-inline-block {
+  display: inline-block;
+}
+
+.filter {
+  margin-bottom: 20px;
+  font-size: 0;
+}
+
+// color
+.ui-danger {
+  color: $red;
+}
+
+.ui-success {
+  color: $red;
+}
+
+.ui-warning {
+  color: $red;
+}
+
+.ui-link-danger {
+  color: $red;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ui-info {
+  color: $red;
+}
+
+a.ui-danger:hover {
+  color: $red;
+  filter: brightness(0.9);
+}
+
+a.ui-danger:active,
+a.ui-danger:visited {
+  color: $red;
+}
+
+// font-size
+.ft-small {
+  font-size: 12px;
+}
+
+.ft-0 {
+  font-size: 0;
+}
+
+// width
+.w-full {
+  width: 100%;
+}
+
+.w-25 {
+  width: 25%;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-75 {
+  width: 75%;
+}
+
+.w-mini {
+  width: 8em;
+}
+
+.w-small {
+  width: 15em;
+}
+
+.w-medium {
+  width: 20em;
+}
+
+// font-style
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// card
+.ui-card {
+  background: #fff;
+  box-shadow: 0 2px 6px 0 rgba(136, 156, 176, 0.1);
+  &-body {
+    padding: 2px;
+  }
+}
+
+// align
+.ui-align-center {
+  text-align: center;
+}
+
+.ui-align-right {
+  text-align: right;
+}
+
+.ui-align-left {
+  text-align: left;
+}
+
+// uploader
+.show-icon-close{
+ .el-upload-list__item .el-icon-close {
+   display: inline-block;
+  }
+  .el-upload-list__item {
+    background-color: #F5F7FA;
+  }
+}
+
+// space
+.ui-mt-10 {
+  margin-top: 10px;
+}
+
+.ui-mt-20 {
+  margin-top: 20px;
+}
+
+.ui-mb-10 {
+  margin-bottom: 10px;
+}
+
+.ui-mb-20 {
+  margin-bottom: 20px;
+}
+
+.ui-mr-20 {
+  margin-right: 20px;
+}
+
+.ui-ml-20 {
+  margin-left: 20px;
+}
