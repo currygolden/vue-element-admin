@@ -3,12 +3,15 @@
   2. 明确缓存层的意义，以及哪些数据适合作为缓存
   3. 缓存主要指接口层面，用于前后端分层设计，和数据存储还是有差异
   4. 明确是使用缓存要慎重，避免问题回滚难定位
+  5. 也可以借助cookie 库做一些存储，但是目的不一样
 */
 
+// 构造函数，提供命名空间
 function Storage(namespace) {
   this.namespace = namespace || ''
 }
 
+// 批量执行操作
 Storage.prototype.eachKey = function(fn) {
   if (!this.isSupport()) {
     return undefined
@@ -22,6 +25,7 @@ Storage.prototype.eachKey = function(fn) {
   }
 }
 
+// 检测兼容性
 Storage.prototype.isSupport = function() {
   try {
     if (localStorage && window.localStorage) {
@@ -33,6 +37,7 @@ Storage.prototype.isSupport = function() {
   return false
 }
 
+// 超出存储上限
 Storage.prototype.isOutSpace = function(error) {
   return (
     error &&
@@ -42,13 +47,16 @@ Storage.prototype.isOutSpace = function(error) {
   )
 }
 
+// 定义存储的过期时间
 Storage.prototype.setExpiration = function(context, expirationTime) {
   const current = new Date().getTime()
+  // expirationTime可能是时间戳/时间段
   context.expiration =
     expirationTime > current ? expirationTime : current + expirationTime
   return context
 }
 
+// 检测是否过期
 Storage.prototype.isExpration = function(expirationTime) {
   return new Date().getTime() > expirationTime
 }
@@ -57,6 +65,7 @@ Storage.prototype.getKey = function(key) {
   return `${this.namespace}-${key}`
 }
 
+// 获取时判断是否过期
 Storage.prototype.getItem = function(key) {
   if (!this.isSupport()) {
     return undefined
@@ -73,7 +82,7 @@ Storage.prototype.getItem = function(key) {
     return undefined
   }
 }
-
+// 调用api的操作丢在 try-catch 中
 function set(key, value, expirationTime) {
   if (!this.isSupport()) {
     return undefined
@@ -94,6 +103,7 @@ function set(key, value, expirationTime) {
   return key
 }
 
+// 处理各种边界条件，增强鲁棒性
 Storage.prototype.setItem = function(
   key,
   value,
@@ -126,6 +136,7 @@ Storage.prototype.removeItem = function(key) {
   return key
 }
 
+// 清空全部
 Storage.prototype.clear = function() {
   if (!this.isSupport()) {
     return undefined
@@ -135,6 +146,7 @@ Storage.prototype.clear = function() {
   })
 }
 
+// 清空已过期
 Storage.prototype.clearExpired = function() {
   if (!this.isSupport()) {
     return undefined
@@ -147,4 +159,17 @@ Storage.prototype.clearExpired = function() {
   })
 }
 
+// 对于 spa 是否有必要是单例模式
+Storage.getInstance = (function(nameSpace) {
+  let instance 
+  return function() {
+    if (!instance) {
+      instance = new Storage(nameSpace)
+    } else {
+      return instance
+    }
+  }
+})()
+
+// 实例化的时候引入类 new 或者单例
 export default Storage
